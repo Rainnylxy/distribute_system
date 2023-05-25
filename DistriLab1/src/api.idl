@@ -1,0 +1,38 @@
+module api {
+    typedef octet byteArray[4*1024];
+
+    struct DataBlock{
+        string dataNodeIP;
+        long long dtBlockId;
+        long long offsize;
+        string filename;
+        long fileBlockId;
+        boolean isCopy;
+        sequence<DataBlock> copyDataBlock;
+    };
+    typedef sequence<string> dataBlockInfo;
+    struct FileMetaData{
+        long fileType;
+        string fileName;
+        long long fileSize;
+        sequence<DataBlock> dataMap;
+        long long accessTime;
+        long long createTime;
+        long long modifyTime;
+        sequence<FileMetaData> childFileMetaData;
+        long fileBlockId;
+    };
+    interface DataNode {
+        byteArray read(in long block_id);
+        void append(in long block_id, in byteArray bytes,in string filename,in long fileBlockId);
+        long randomBlockId();
+        string returnStatus(in string recv);
+    };
+    interface NameNode{
+    //TODO: complete the interface design
+        FileMetaData open(in string filepath, in long mode);
+        //allocateBlock(string filepath,int filesize);
+        void close(in string fileInfo);
+        dataBlockInfo allocateDN(in string filepath,in long filesize);
+    };
+};
